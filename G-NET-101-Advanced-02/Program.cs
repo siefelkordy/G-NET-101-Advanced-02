@@ -13,6 +13,7 @@ public class Product
 
 class Program
 {
+    // Task 01: Smart Product Search
     static List<Product> SearchProducts(
         List<Product> products,
         Func<Product, bool> filter)
@@ -30,17 +31,20 @@ class Program
         return result;
     }
 
-    static void PrintProducts(List<Product> products)
+    // Task 03.1: Custom Report Generator
+    static void PrintReport(
+        List<Product> products,
+        Action<Product> printAction)
     {
         foreach (Product p in products)
         {
-            Console.WriteLine(
-                $"{p.Name} | {p.Category} | ${p.Price} | Stock: {p.Stock}");
+            printAction(p);
         }
     }
 
     static void Main()
     {
+        // Product catalog
         List<Product> catalog = new()
         {
             new Product { Id=1, Name="Laptop", Category="Electronics", Price=1200, Stock=10 },
@@ -54,6 +58,10 @@ class Program
             new Product { Id=9, Name="Headphones", Category="Electronics", Price=150, Stock=40 },
             new Product { Id=10, Name="Jacket", Category="Clothing", Price=120, Stock=15 }
         };
+
+        // ============================
+        // TASK 01: SMART PRODUCT SEARCH
+        // ============================
 
         // 1. All Electronics products
         List<Product> electronics = SearchProducts(
@@ -69,18 +77,44 @@ class Program
 
         // 4. Clothing products under $100
         List<Product> cheapClothing = SearchProducts(
-            catalog, p => p.Category == "Clothing" && p.Price < 100);
+            catalog,
+            p => p.Category == "Clothing" && p.Price < 100);
 
-        Console.WriteLine("=== Electronics Products ===");
-        PrintProducts(electronics);
+        Console.WriteLine("===== TASK 01: PRODUCT SEARCH =====");
 
-        Console.WriteLine("\n=== Products Cheaper Than $50 ===");
-        PrintProducts(cheapProducts);
+        Console.WriteLine("\n--- Electronics Products ---");
+        PrintReport(electronics,
+            p => Console.WriteLine($"{p.Name} - ${p.Price}"));
 
-        Console.WriteLine("\n=== Products In Stock ===");
-        PrintProducts(inStock);
+        Console.WriteLine("\n--- Products Cheaper Than $50 ---");
+        PrintReport(cheapProducts,
+            p => Console.WriteLine($"{p.Name} - ${p.Price}"));
 
-        Console.WriteLine("\n=== Clothing Under $100 ===");
-        PrintProducts(cheapClothing);
+        Console.WriteLine("\n--- Products In Stock ---");
+        PrintReport(inStock,
+            p => Console.WriteLine($"{p.Name} - Stock: {p.Stock}"));
+
+        Console.WriteLine("\n--- Clothing Under $100 ---");
+        PrintReport(cheapClothing,
+            p => Console.WriteLine($"{p.Name} - ${p.Price}"));
+
+        // ===================================
+        // TASK 03.1: CUSTOM REPORT GENERATOR
+        // ===================================
+
+        Console.WriteLine("\n===== TASK 03.1: CUSTOM REPORTS =====");
+
+        // Scenario 1: Short Report
+        Console.WriteLine("\n--- Short Report ---");
+
+        PrintReport(catalog,
+            p => Console.WriteLine($"{p.Name} - ${p.Price}"));
+
+        // Scenario 2: Detailed Report
+        Console.WriteLine("\n--- Detailed Report ---");
+
+        PrintReport(catalog,
+            p => Console.WriteLine(
+                $"[{p.Category}] {p.Name} | Price: ${p.Price} | Stock: {p.Stock}"));
     }
 }
